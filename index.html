@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Center de Salud | Atención trazable</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-shell" id="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <h2>Call Center<span>Salud SOME</span></h2>
+      </div>
+      <nav aria-label="Navegación principal">
+        <ul>
+          <li><a href="#inicio" class="active" data-view="home-view">Inicio</a></li>
+          <li><a href="#llamadas" data-view="calls-view">Llamadas</a></li>
+          <li><a href="#citas" data-view="appointments-view">Citas</a></li>
+          <li><a href="#historial" data-view="history-view">Historial</a></li>
+          <li><a href="#reportes" data-view="reports-view">Reportes</a></li>
+        </ul>
+      </nav>
+      <p class="demo-sidebar-note">ENTORNO DE DEMOSTRACIÓN<br>DATOS FICTICIOS</p>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-header">
+        <div>
+          <p class="eyebrow">Unidad Técnica Transversal Sur · SOME</p>
+          <h1 id="page-title">Atención trazable</h1>
+        </div>
+        <time class="header-date" id="current-date"></time>
+      </header>
+      <div class="demo-notice" role="note"><p><strong>Modo demostración.</strong> Usa solo datos ficticios. AVIS y WhatsApp no están conectados; las acciones se guardan únicamente en este navegador.</p><button class="btn btn-secondary" id="reset-demo" type="button">Restablecer demo</button></div>
+      <p class="app-feedback" id="app-feedback" role="status" aria-live="polite"></p>
+
+      <section class="page-view" id="home-view">
+        <div class="workflow-strip" aria-label="Flujo de atención">
+          <span>01 Recepción</span><span>02 Validación</span><span>03 Gestión</span><span>04 Notificación</span><span>05 Registro</span>
+        </div>
+        <div class="dashboard-grid">
+          <section class="card">
+            <h2>Nueva interacción</h2>
+            <p class="section-help">Ficha operativa de demostración. La validación debe seguir el protocolo institucional.</p>
+            <form id="call-form" class="proto-form">
+              <input id="call-id" type="hidden">
+              <div class="form-group">
+                <label for="patient-name">Nombre de prueba</label>
+                <input id="patient-name" name="patientName" type="text" maxlength="120" placeholder="Paciente de prueba 04" autocomplete="off" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="patient-rut">Identificador ficticio</label>
+                  <input id="patient-rut" name="patientRut" type="text" maxlength="20" placeholder="DEMO-004" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label for="patient-phone">Teléfono ficticio (opcional)</label>
+                  <input id="patient-phone" name="patientPhone" type="tel" maxlength="20" placeholder="No usar un número real" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="identity-status">Estado de validación</label>
+                <select id="identity-status" name="identityStatus" required>
+                  <option value="pending">Pendiente</option>
+                  <option value="validated">Validada por protocolo</option>
+                  <option value="not-validated">No validada · derivar o dejar pendiente</option>
+                </select>
+                <small class="field-help">La demo no verifica identidad ni confirma que los datos coincidan.</small>
+              </div>
+              <div class="form-group">
+                <label for="call-reason">Motivo de la llamada</label>
+                <select id="call-reason" name="reason" required>
+                  <option value="">Seleccionar motivo</option>
+                  <option>Solicitud de hora médica</option>
+                  <option>Consulta de medicamentos / receta</option>
+                  <option>Consulta administrativa</option>
+                  <option>Cambio o anulación de hora</option>
+                  <option>Reclamo / sugerencia</option>
+                  <option>Derivación</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="call-outcome">Resultado de la interacción</label>
+                  <select id="call-outcome" name="outcome" required>
+                    <option value="pending">Pendiente</option>
+                    <option value="resolved">Resuelto</option>
+                    <option value="appointment">Solicitud de hora</option>
+                    <option value="referred">Derivado</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="follow-up-date">Seguimiento (si aplica)</label>
+                  <input id="follow-up-date" name="followUpAt" type="date">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="call-notes">Resumen operativo / observaciones</label>
+                <textarea id="call-notes" name="notes" rows="3" maxlength="500" placeholder="No incluir detalles clínicos innecesarios"></textarea>
+              </div>
+              <label class="consent-row"><input id="notification-consent" name="consent" type="checkbox"><span>Consentimiento ficticio para simular una confirmación por WhatsApp</span></label>
+              <div class="form-actions">
+                <button class="btn btn-secondary" id="save-call" name="saveStatus" value="open" type="submit">Guardar pendiente</button>
+                <button class="btn btn-primary" id="close-call" name="saveStatus" value="closed" type="submit">Guardar y cerrar</button>
+                <button class="btn btn-secondary" id="cancel-edit" type="button" hidden>Cancelar edición</button>
+              </div>
+            </form>
+          </section>
+          <section class="card">
+            <div class="section-heading">
+              <div><p class="eyebrow">AVIS · integración pendiente</p><h2>Solicitudes de hora</h2></div>
+              <button class="btn btn-secondary" type="button" data-open-view="appointments-view">Ver agenda</button>
+            </div>
+            <div id="upcoming-list" class="record-list"></div>
+            <p class="integration-note" id="whatsapp-status">WhatsApp no conectado · la demo no envía mensajes.</p>
+          </section>
+        </div>
+      </section>
+
+      <section class="page-view" id="calls-view" hidden>
+        <section class="card">
+          <h2>Llamadas recientes</h2>
+          <div class="table-wrap">
+            <table><thead><tr><th>Fecha</th><th>Paciente ficticio</th><th>ID demo</th><th>Motivo</th><th>Resultado</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="calls-table"></tbody></table>
+          </div>
+        </section>
+      </section>
+
+      <section class="page-view" id="appointments-view" hidden>
+        <div class="dashboard-grid">
+          <section class="card">
+            <h2>Agendar cita</h2>
+            <form id="appointment-form" class="proto-form">
+              <div class="form-group"><label for="appointment-call">Interacción asociada</label><select id="appointment-call" required></select></div>
+              <div class="form-group"><label for="appointment-date">Fecha y hora</label><input id="appointment-date" type="datetime-local" required></div>
+              <div class="form-group"><label for="appointment-clinic">Centro de salud</label><input id="appointment-clinic" type="text" maxlength="120" required></div>
+              <div class="form-group"><label for="appointment-professional">Profesional / especialidad</label><input id="appointment-professional" type="text" maxlength="120"></div>
+              <p class="field-help">La solicitud queda pendiente de consultar y confirmar en AVIS; esta demo no reserva horas reales.</p>
+              <button class="btn btn-primary" type="submit">Guardar solicitud de hora</button>
+            </form>
+          </section>
+          <section class="card"><h2>Agenda registrada</h2><div id="appointments-list" class="record-list"></div></section>
+        </div>
+      </section>
+
+      <section class="page-view" id="history-view" hidden>
+        <section class="card">
+          <div class="section-heading">
+            <h2>Historial de llamadas</h2>
+            <form id="search-form" class="search-form">
+              <label class="visually-hidden" for="history-search">Buscar por paciente, RUT o teléfono</label>
+              <input id="history-search" type="search" placeholder="Nombre, ID ficticio o teléfono de prueba">
+              <button class="btn btn-secondary" type="submit">Buscar</button>
+            </form>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Fecha</th><th>ID demo</th><th>Motivo</th><th>Resultado</th><th>Estado</th><th>Seguimiento</th><th>Notificación</th><th>Acción</th></tr></thead><tbody id="history-table"></tbody></table>
+          </div>
+          <div class="history-audit"><h3>Registro de actividad</h3><div id="audit-list" class="record-list"></div></div>
+        </section>
+      </section>
+
+      <section class="page-view" id="reports-view" hidden>
+        <div class="report-metrics" id="report-metrics"></div>
+        <p class="report-caveat">Indicadores calculados solo con registros ficticios de este navegador. Las cifras del proyecto siguen siendo hipótesis hasta medir una línea base y un piloto.</p>
+        <section class="card"><h2>Interacciones por motivo · últimos 30 días</h2><div id="reason-report" class="record-list"></div></section>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="/demo.js"></script>
+</body>
+</html>
